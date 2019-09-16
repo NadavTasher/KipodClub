@@ -11,6 +11,7 @@ $chat_database = null;
 $chart_database = null;
 
 api(KIPOD_API, function ($action, $parameters) {
+    global $chart_database;
     $user = accounts();
     if ($user !== null) {
         // Load databased only if passed authentication.
@@ -22,6 +23,8 @@ api(KIPOD_API, function ($action, $parameters) {
             } else {
                 return [false, "Missing parameters"];
             }
+        } else if ($action === "chats") {
+            return kipod_chats($user->id);
         } else if ($action === "write") {
             if (isset($parameters->chat) && isset($parameters->content)) {
                 return kipod_message($parameters->chat, $user->id, $parameters->content);
@@ -34,14 +37,16 @@ api(KIPOD_API, function ($action, $parameters) {
             } else {
                 return [false, "Missing parameters"];
             }
-        } else if ($action === "chats") {
-
         } else if ($action === "kipod") {
-
+            if (isset($parameters->chat) && isset($parameters->message)) {
+                return kipod_kipod($user->id, $parameters->chat, $parameters->id);
+            } else {
+                return [false, "Missing parameters"];
+            }
         } else if ($action === "list") {
-
+            return kipod_users($user->id);
         } else if ($action === "chart") {
-
+            return [true, $chart_database];
         }
         kipod_save();
         return $results;
@@ -66,12 +71,26 @@ function kipod_chat($user, $user_ids)
     return [true, $id];
 }
 
+function kipod_chats($user)
+{
+    global $chat_database;
+    $array = array();
+    foreach ($chat_database as $id => $chat) {
+        if (array_search($user, $chat->participants) !== false) {
+            $chat_info = new stdClass();
+            $chat_info->id = $id;
+            $chat_info->name = $chat->name;
+            array_push($array, $chat_info);
+        }
+    }
+    return [true, $array];
+}
+
 function kipod_messages($uid, $id)
 {
     global $chat_database;
     if (isset($chat_database->$id)) {
         $translation_table = kipod_translation_table($chat_database->$id->participants);
-        $chat = new stdClass();
         $messages = array();
         foreach ($chat_database->$id->messages as $chat_message) {
             if (isset($translation_table->{$chat_message->sender})) {
@@ -80,6 +99,7 @@ function kipod_messages($uid, $id)
                 $message->sender = $translation_table->{$chat_message->sender};
                 $message->kipod = $chat_message->kipod;
                 $message->content = $chat_message->content;
+                $message->me = $uid === $chat_message->sender;
                 array_push($messages, $message);
             }
         }
@@ -107,13 +127,17 @@ function kipod_message($id, $sender, $text)
     return [false, "No such chat"];
 }
 
-function kipod_kipod($chat, $id)
+function kipod_kipod($user, $chat, $id)
 {
-    global $chat_database;
+    global $chat_database, $chart_database;
     if (isset($chat_database->$chat)) {
         foreach ($chat_database->$chat->messages as $message) {
-            if ($message->$id === $id) {
+            if ($message->$id === $id && $message->sender !== $user) {
                 $message->kipod = true;
+                if (!isset($chart_database->{$message->sender})) {
+                    $chart_database->{$message->sender} = 0;
+                }
+                $chart_database->{$message->sender}++;
                 return [true, null];
             }
         }
@@ -143,6 +167,21 @@ function kipod_translation_table($participants)
         }
     }
     return $table;
+}
+
+function kipod_users($user)
+{
+    global $accounts_database;
+    $array = array();
+    foreach ($accounts_database as $id => $value) {
+        if ($id !== $user) {
+            $object = new stdClass();
+            $object->id = $id;
+            $object->name = $value->name;
+            array_push($array, $object);
+        }
+    }
+    return [true, $array];
 }
 
 function kipod_save()
