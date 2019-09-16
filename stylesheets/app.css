@@ -3,4 +3,18 @@ body {
     max-width: 460px;
 }
 
-/* App Style */
+p{
+    color: white !important;
+}
+
+.logo{
+}
+
+[list] {
+    -webkit-overflow-scrolling: touch;
+    max-height: 60vh;
+    min-height: 60vh;
+    height: 60vh;
+    overflow-y: scroll;
+    justify-content: start !important;
+}
