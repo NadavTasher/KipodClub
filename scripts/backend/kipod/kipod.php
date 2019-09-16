@@ -79,7 +79,7 @@ function kipod_chats($user)
         if (array_search($user, $chat->participants) !== false) {
             $chat_info = new stdClass();
             $chat_info->id = $id;
-            $chat_info->name = $chat->name;
+            $chat_info->name = $chat->name === null ? kipod_chat_description(kipod_translation_table($chat->participants)) : $chat->name;
             array_push($array, $chat_info);
         }
     }
@@ -167,6 +167,22 @@ function kipod_translation_table($participants)
         }
     }
     return $table;
+}
+
+function kipod_chat_description($translation_table)
+{
+    $string = "";
+    if (count((array)$translation_table) > 1) {
+        foreach ($translation_table as $id => $name) {
+            if (empty($string))
+                $string .= $name;
+            else
+                $string .= ", " . $name;
+        }
+    } else {
+        $string = $translation_table[0];
+    }
+    return $string;
 }
 
 function kipod_users($user)
