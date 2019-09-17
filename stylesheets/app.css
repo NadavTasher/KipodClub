@@ -3,11 +3,8 @@ body {
     max-width: 460px;
 }
 
-p{
+p {
     color: white !important;
-}
-
-.logo{
 }
 
 [list] {
@@ -17,4 +14,39 @@ p{
     height: 60vh;
     overflow-y: scroll;
     justify-content: start !important;
+}
+
+[list]::-webkit-scrollbar {
+    width: 0 !important;
+}
+
+#chat {
+    padding: 1vh;
+}
+
+#chat-text {
+    width: 100%;
+}
+
+#chat-send {
+    max-height: 6vh;
+
+}
+
+.message {
+    padding: 1vh !important;
+    margin: 0.5vh 0 !important;
+    width: max-content;
+    border-radius: 1vh;
+}
+
+.message p {
+    color: black !important;
+    justify-content: start;
+    width: 100%;
+}
+
+.message img {
+    max-width: 2vh;
+    align-self: flex-end;
 }

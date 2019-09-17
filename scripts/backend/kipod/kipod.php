@@ -19,34 +19,34 @@ api(KIPOD_API, function ($action, $parameters) {
         $results = [false, "No such action"];
         if ($action === "chat") {
             if (isset($parameters->participants)) {
-                return kipod_chat($user->id, $parameters->participants);
+                $results = kipod_chat($user->id, $parameters->participants);
             } else {
-                return [false, "Missing parameters"];
+                $results = [false, "Missing parameters"];
             }
         } else if ($action === "chats") {
-            return kipod_chats($user->id);
+            $results = kipod_chats($user->id);
         } else if ($action === "write") {
             if (isset($parameters->chat) && isset($parameters->content)) {
-                return kipod_message($parameters->chat, $user->id, $parameters->content);
+                $results = kipod_message($parameters->chat, $user->id, $parameters->content);
             } else {
-                return [false, "Missing parameters"];
+                $results = [false, "Missing parameters"];
             }
         } else if ($action === "read") {
             if (isset($parameters->chat)) {
-                return kipod_messages($user->id, $parameters->chat);
+                $results = kipod_messages($user->id, $parameters->chat);
             } else {
-                return [false, "Missing parameters"];
+                $results = [false, "Missing parameters"];
             }
         } else if ($action === "kipod") {
             if (isset($parameters->chat) && isset($parameters->message)) {
-                return kipod_kipod($user->id, $parameters->chat, $parameters->id);
+                $results = kipod_kipod($user->id, $parameters->chat, $parameters->message);
             } else {
-                return [false, "Missing parameters"];
+                $results = [false, "Missing parameters"];
             }
         } else if ($action === "list") {
-            return kipod_users($user->id);
+            $results = kipod_users($user->id);
         } else if ($action === "chart") {
-            return [true, $chart_database];
+            $results = [true, kipod_chart()];
         }
         kipod_save();
         return $results;
@@ -79,7 +79,7 @@ function kipod_chats($user)
         if (array_search($user, $chat->participants) !== false) {
             $chat_info = new stdClass();
             $chat_info->id = $id;
-            $chat_info->name = $chat->name === null ? kipod_chat_description(kipod_translation_table($chat->participants)) : $chat->name;
+            $chat_info->name = $chat->name === null ? ("Chat with " . kipod_chat_description(kipod_translation_table($chat->participants))) : $chat->name;
             array_push($array, $chat_info);
         }
     }
@@ -132,7 +132,7 @@ function kipod_kipod($user, $chat, $id)
     global $chat_database, $chart_database;
     if (isset($chat_database->$chat)) {
         foreach ($chat_database->$chat->messages as $message) {
-            if ($message->$id === $id && $message->sender !== $user) {
+            if ($message->id === $id && $message->sender !== $user) {
                 $message->kipod = true;
                 if (!isset($chart_database->{$message->sender})) {
                     $chart_database->{$message->sender} = 0;
@@ -198,6 +198,16 @@ function kipod_users($user)
         }
     }
     return [true, $array];
+}
+
+function kipod_chart()
+{
+    global $accounts_database, $chart_database;
+    $chart = new stdClass();
+    foreach ($chart_database as $id => $number) {
+        $chart->{$accounts_database->$id->name} = $number;
+    }
+    return $chart;
 }
 
 function kipod_save()

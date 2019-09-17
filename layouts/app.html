@@ -1,26 +1,26 @@
 <div id="home">
-    <p>Welcome to the exclusive Kipod club!</p>
+    <p style="font-size: 6vh;">Welcome to the kipod club!</p>
     <button onclick="page(this.parentNode, 'chats');">Chat</button>
-    <button>Kipod Chart</button>
+    <button onclick="page(this.parentNode, 'chart');">Kipod Chart</button>
 </div>
 <div id="chats">
     <p>Chat with others</p>
-    <input id="search" type="text" placeholder="Find Chat"/>
+    <input id="search" type="text" onkeyup="search(this.value);" placeholder="Find Chat"/>
     <div id="chats-list" column list></div>
 </div>
 <div id="chart" column>
-    <p>Check out the kipod chart</p>
-    <div id="kipod-list" column list></div>
+    <p>Check out the kipod chart:</p>
+    <div id="chart-list" column list></div>
 </div>
 <div id="chat">
     <p id="chat-name"></p>
     <div id="chat-contents" column list></div>
     <div row>
         <input id="chat-text" type="text" placeholder="Message"/>
-        <img src="images/icons/kipod/send.png">
+        <img id="chat-send" src="images/icons/kipod/send.png">
     </div>
 </div>
 <div id="nologin">
-    <img class="logo" src="images/icons/kipod/mad.png"/>
+    <img src="images/icons/kipod/mad.png"/>
     <p>You must be logged in to access the club</p>
 </div>
