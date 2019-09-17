@@ -120,7 +120,7 @@ function kipod_message($id, $sender, $text)
             $message->content = $text;
             $message->kipod = false;
             array_push($chat_database->$id->messages, $message);
-            return [true, $message->$id];
+            return [true, $message->id];
         }
         return [false, "No such participant"];
     }

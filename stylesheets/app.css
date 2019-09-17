@@ -9,7 +9,7 @@ p {
 
 [list] {
     -webkit-overflow-scrolling: touch;
-    padding: 1vh;
+    padding: 1vh !important;
     max-height: 80vh;
     min-height: 80vh;
     height: 80vh;
@@ -40,6 +40,9 @@ p {
 .message p {
     color: black !important;
     justify-content: start;
+}
+
+.message > div > p {
     width: 100%;
 }
 
