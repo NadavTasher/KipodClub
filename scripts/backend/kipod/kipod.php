@@ -20,6 +20,7 @@ api(KIPOD_API, function ($action, $parameters) {
         if ($action === "chat") {
             if (isset($parameters->participants)) {
                 $results = kipod_chat($user->id, $parameters->participants);
+                kipod_save();
             } else {
                 $results = [false, "Missing parameters"];
             }
@@ -28,6 +29,7 @@ api(KIPOD_API, function ($action, $parameters) {
         } else if ($action === "write") {
             if (isset($parameters->chat) && isset($parameters->content)) {
                 $results = kipod_message($parameters->chat, $user->id, $parameters->content);
+                kipod_save();
             } else {
                 $results = [false, "Missing parameters"];
             }
@@ -40,6 +42,7 @@ api(KIPOD_API, function ($action, $parameters) {
         } else if ($action === "kipod") {
             if (isset($parameters->chat) && isset($parameters->message)) {
                 $results = kipod_kipod($user->id, $parameters->chat, $parameters->message);
+                kipod_save();
             } else {
                 $results = [false, "Missing parameters"];
             }
@@ -48,7 +51,6 @@ api(KIPOD_API, function ($action, $parameters) {
         } else if ($action === "chart") {
             $results = [true, kipod_chart()];
         }
-        kipod_save();
         return $results;
     } else {
         return [false, "Authentication error"];
