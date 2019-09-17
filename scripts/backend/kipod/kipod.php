@@ -213,8 +213,10 @@ function kipod_chart()
 function kipod_save()
 {
     global $chat_database, $chart_database;
-    file_put_contents(KIPOD_CHAT_DATABASE, json_encode($chat_database));
-    file_put_contents(KIPOD_CHART_DATABASE, json_encode($chart_database));
+    if ($chat_database !== null)
+        file_put_contents(KIPOD_CHAT_DATABASE, json_encode($chat_database));
+    if ($chart_database !== null)
+        file_put_contents(KIPOD_CHART_DATABASE, json_encode($chart_database));
 }
 
 function kipod_load()
