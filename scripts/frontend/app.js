@@ -126,7 +126,7 @@ function load_chat(id) {
         }
     };
     update();
-    // setInterval(update, 2000, 0);
+    setInterval(update, 2000, 0);
 }
 
 function new_chat(participants, callback) {
