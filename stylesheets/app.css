@@ -9,19 +9,16 @@ p {
 
 [list] {
     -webkit-overflow-scrolling: touch;
-    max-height: 60vh;
-    min-height: 60vh;
-    height: 60vh;
+    padding: 1vh;
+    max-height: 80vh;
+    min-height: 80vh;
+    height: 80vh;
     overflow-y: scroll;
     justify-content: start !important;
 }
 
 [list]::-webkit-scrollbar {
     width: 0 !important;
-}
-
-#chat {
-    padding: 1vh;
 }
 
 #chat-text {
