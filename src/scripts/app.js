@@ -131,7 +131,7 @@ function loadProduct() {
  * Loads the special UI elements
  */
 function loadUI() {
-    if (!loadProduct()){
+    if (!loadProduct()) {
         UI.hide();
     }
 }
@@ -214,10 +214,9 @@ function setTitle(title) {
 
 /**
  * Sets the bar's version text.
- * @param name Version
  * @param paid Payment status
  */
-function setProduct(name, paid = false) {
+function setProduct(paid = false) {
     UI.find("product").setAttribute("paid", paid.toString());
-    UI.find("product").innerText = name + " version";
+    UI.find("product").innerText = (paid ? "Paid" : "Free") + " version";
 }
