@@ -51,7 +51,7 @@
 <div id="authenticated" content>
     <div id="bar" row>
         <p id="title">Kipod Club Chat</p>
-        <p id="product" paid="false">Free</p>
+        <p id="product" paid="false">Free version</p>
     </div>
     <div id="pages" column>
         <div id="chats-page" column>
@@ -84,15 +84,15 @@
         <p style="width: auto;">▶</p>
     </div>
 </template>
-<template id="message-sent">
-    <div kipod="${kipod}" style="background-color: var(--bright); max-width: 60vw; padding: 1vh; margin: 1vh; border-radius: 1vh; align-self: flex-end;" column>
+<template id="message-text">
+    <div kipod="${kipod}" style="background-color: var(--bright); max-width: 60vw; padding: 1vh; margin: 1vh; border-radius: 1vh; align-self: flex-${align};" column>
         <p style="font-size: 3vh; padding: 0.2vh; margin: 0.2vh;">${text}</p>
         <p style="font-size: 2vh; padding: 0.2vh; margin: 0.2vh; justify-content: flex-end;">${time}</p>
     </div>
 </template>
-<template id="message-received">
-    <div kipod="${kipod}" style="background-color: var(--bright); max-width: 60vw; padding: 1vh; margin: 1vh; border-radius: 1vh; align-self: flex-start;" column>
-        <p style="font-size: 2vh; padding: 0.2vh; margin: 0.2vh; justify-content: flex-start;">${name}</p>
+<template id="message-image">
+    <div kipod="${kipod}" style="background-color: var(--bright); max-width: 60vw; padding: 1vh; margin: 1vh; border-radius: 1vh; align-self: flex-${align};" column>
+        <img src="${url}" style="border: var(--dark) 1px solid; padding: 0.2vh; margin: 0.2vh; max-height: 20vh; max-width: 56vw;"/>
         <p style="font-size: 3vh; padding: 0.2vh; margin: 0.2vh;">${text}</p>
         <p style="font-size: 2vh; padding: 0.2vh; margin: 0.2vh; justify-content: flex-end;">${time}</p>
     </div>

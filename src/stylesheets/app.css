@@ -43,7 +43,7 @@ body {
     /* Set the background color */
     background-color: var(--bright);
     /* Item alignment */
-    justify-content: start;
+    justify-content: space-between;
 }
 
 #bar > * {

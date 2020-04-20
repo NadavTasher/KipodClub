@@ -7,6 +7,8 @@ function load() {
     showLoading();
     // Load chats
     loadChats();
+    // Load product
+    loadProduct();
     // Start reload interval
     setInterval(loadChat, 5 * 1000);
 }
@@ -111,6 +113,17 @@ function loadChats() {
 }
 
 /**
+ * Loads the product status.
+ */
+function loadProduct() {
+    if (Authority.validate(Authenticate.token, ["kipod_club_premium"])[0]) {
+        setProduct("Paid", true);
+    } else {
+        setProduct("Free", false);
+    }
+}
+
+/**
  * Loads the message list.
  * @param chatID Chat ID
  * @param callback Callback function
@@ -137,26 +150,29 @@ function loadChat(chatID = window.chatID, callback = null) {
                         // Is the sender the current user?
                         let isMe = message.authorID === userID;
 
-                        // Create a date
+                        // Create a date object to be used for the time label
                         let date = new Date(message.creationTime * 1000);
 
+                        // Function to prepend a 0 to timestamps
                         let wrapTime = (number) => {
                             return (number < 10) ? "0" + number : number;
                         };
 
-                        let messageTime = wrapTime(date.getHours()) + ":" + wrapTime(date.getMinutes());
-                        let messageText = message.messageText;
-
-                        if (isMe) {
-                            messageList.appendChild(UI.create("message-sent", {
-                                text: messageText,
-                                time: messageTime
+                        // Check if the message is an image message
+                        if (!message.hasOwnProperty("imageURL")) {
+                            messageList.appendChild(UI.create("message-text", {
+                                align: isMe ? "end" : "start",
+                                text: message.messageText,
+                                time: wrapTime(date.getHours()) + ":" + wrapTime(date.getMinutes()),
+                                kipod: message.kipod
                             }));
                         } else {
-                            messageList.appendChild(UI.create("message-received", {
-                                name: message.authorName,
-                                text: messageText,
-                                time: messageTime
+                            messageList.appendChild(UI.create("message-image", {
+                                align: isMe ? "end" : "start",
+                                text: message.messageText,
+                                time: wrapTime(date.getHours()) + ":" + wrapTime(date.getMinutes()),
+                                url: message.imageURL,
+                                kipod: message.kipod
                             }));
                         }
                     }
@@ -183,4 +199,14 @@ function showLoading() {
  */
 function setTitle(title) {
     UI.find("title").innerText = title;
+}
+
+/**
+ * Sets the bar's version text.
+ * @param name Version
+ * @param paid Payment status
+ */
+function setProduct(name, paid = false) {
+    UI.find("product").setAttribute("paid", paid.toString());
+    UI.find("product").innerText = name + " version";
 }
