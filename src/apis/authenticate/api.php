@@ -17,11 +17,11 @@ class Authenticate
     public const API = "authenticate";
 
     // Column names
+    public const COLUMN_PERMISSIONS = "permissions";
     private const COLUMN_NAME = "name";
     private const COLUMN_SALT = "salt";
     private const COLUMN_HASH = "hash";
     private const COLUMN_LOCK = "lock";
-    private const COLUMN_ELEVATION = "elevation";
 
     // API mode
     private const TOKENS = true;
@@ -50,7 +50,7 @@ class Authenticate
         self::$database->createColumn(self::COLUMN_SALT);
         self::$database->createColumn(self::COLUMN_HASH);
         self::$database->createColumn(self::COLUMN_LOCK);
-        self::$database->createColumn(self::COLUMN_ELEVATION);
+        self::$database->createColumn(self::COLUMN_PERMISSIONS);
         // Make sure the authority is set-up
         self::$authority = new Authority(self::API);
     }
@@ -186,9 +186,9 @@ class Authenticate
                                     // Create a combined permissions list
                                     $permissions = self::$configuration->permissions->issuing;
                                     // Check if the user is elevated
-                                    if (($elevation = self::$database->get($userID, self::COLUMN_ELEVATION))[0]) {
-                                        if ($elevation[1] === "true") {
-                                            array_push($permissions, "kipod_club_premium");
+                                    if (($additional = self::$database->get($userID, self::COLUMN_PERMISSIONS))[0]) {
+                                        foreach (json_decode($additional[1]) as $permission) {
+                                            array_push($permissions, $permission);
                                         }
                                     }
                                     // Issue a new token
