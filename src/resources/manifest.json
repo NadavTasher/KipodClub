@@ -3,8 +3,8 @@
   "short_name": "MySimpleChat",
   "description": "A simple chat app.",
   "start_url": "../index.html",
-  "background_color": "#ffffff",
-  "theme_color": "#ffffff",
+  "background_color": "#383838",
+  "theme_color": "#383838",
   "display": "standalone",
   "orientation": "natural",
   "icons": [

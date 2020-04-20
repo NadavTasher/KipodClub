@@ -19,8 +19,8 @@ Base::handle(function ($action, $parameters) {
                 $chatsDatabase = new Database("chats");
                 $usersDatabase->createColumn("chats");
                 $chatsDatabase->createColumn("name");
-                $chatsDatabase->createColumn("recipients");
                 $chatsDatabase->createColumn("messages");
+                $chatsDatabase->createColumn("recipients");
                 // Make sure user exists
                 ensure_user_integrity($usersDatabase, $userID);
                 // Parse action
@@ -67,8 +67,9 @@ Base::handle(function ($action, $parameters) {
                         return [true, $chatID];
                     }
                     return [false, "Parameter error"];
-                } else if ($action === "sendMessage") {
-                    if (isset($parameters->chat) && is_string($parameters->chat) && isset($parameters->message) && is_string($parameters->message)) {
+                } else if ($action === "sendText" || $action === "sendImage") {
+                    if (isset($parameters->chat) && is_string($parameters->chat) &&
+                        isset($parameters->content) && is_string($parameters->content)) {
                         // Fetch chats
                         $chatID = $parameters->chat;
                         $chats = json_decode($usersDatabase->get($userID, "chats")[1]);
@@ -80,10 +81,10 @@ Base::handle(function ($action, $parameters) {
                             $messages = json_decode($chatsDatabase->get($chatID, "messages")[1]);
                             // Create a new message
                             $messageObject = new stdClass();
-                            $messageObject->authorID = $userID;
-                            $messageObject->authorName = hex2bin($userID);
-                            $messageObject->creationTime = time();
-                            $messageObject->messageText = $parameters->message;
+                            $messageObject->sender = $userID;
+                            $messageObject->type = ($action === "sendText" ? "text" : "image");
+                            $messageObject->content = $parameters->content;
+                            $messageObject->timestamp = time();
                             // Push to array
                             array_push($messages, $messageObject);
                             // Write messages

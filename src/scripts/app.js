@@ -9,83 +9,73 @@ function load() {
     loadChats();
     // Load product
     loadProduct();
-    // Load the special elevated (purchased) UI
-    loadUI();
     // Start reload interval
     setInterval(loadChat, 5 * 1000);
 }
 
 /**
- * Opens the new chat page.
- */
-function newChat() {
-    setTitle("New chat");
-    UI.view("new-page");
-}
-
-/**
  * Creates the chat from the user inputs.
  */
-function finalizeChat() {
-    let name = UI.find("new-name").value;
-    let participants = UI.find("new-recipient").value;
+function clickCreateChat() {
+    let name = prompt("What's the chat name?", "My kipod chat");
+    // Make sure length is longer than 0
+    if (name === null || name.length === 0)
+        return;
+    let recipient = prompt("Who's the recipient?", "Shuky");
+    // Make sure length is longer than 0
+    if (recipient === null || recipient.length === 0)
+        return;
+    showLoading();
     // Validate and create chat
-    if (name.length > 0 && participants.length > 0) {
-        UI.find("new-name").value = "";
-        UI.find("new-recipient").value = "";
-        createChat(name, participants);
-    }
-}
-
-/**
- * Scrolls to the bottom of the message list.
- */
-function scrollMessage() {
-    let list = UI.find("message-list");
-    list.scrollTo(0, list.scrollHeight);
-}
-
-/**
- * Sends a message from the user inputs.
- */
-function finalizeMessage() {
-    let message = UI.find("message-input").value;
-    if (message.length > 0) {
-        UI.find("message-input").value = "";
-        sendMessage(chatID, message);
-    }
-}
-
-/**
- * Creates a new chat.
- * @param name Chat name
- * @param recipient Recipient name
- */
-function createChat(name, recipient) {
     API.call("chat", "createChat", {
         name: name,
         recipient: recipient,
         token: Authenticate.token
     }, (status, result) => {
         if (status) {
-            showLoading();
-            setTitle(name);
-            loadChat(result, scrollMessage);
+            loadChat(result, () => setTitle(name));
         }
     });
 }
 
 /**
- * Sends a message.
- * @param chatID Chat ID
- * @param message Message
+ * Scrolls to the bottom of the message list.
  */
-function sendMessage(chatID, message) {
-    API.call("chat", "sendMessage", {
-        chat: chatID,
-        message: message,
-        token: Authenticate.token
-    }, () => loadChat(chatID));
+function clickScrollChat() {
+    let list = UI.find("message-list");
+    list.scrollTo(0, list.scrollHeight);
+}
+
+/**
+ * Sends a text message from the user inputs.
+ */
+function clickSendText() {
+    let input = UI.find("message-input-text");
+    if (input.value.length > 0) {
+        // Send the message
+        API.call("chat", "sendText", {
+            chat: chatID,
+            content: input.value,
+            token: Authenticate.token
+        }, () => loadChat(chatID));
+        // Empty the input
+        input.value = "";
+    }
+}
+
+/**
+ * Sends a url message (image).
+ */
+function clickSendImage() {
+    let input = prompt("Image URL", "images/icons/icon.png");
+    if (input.length > 0) {
+        // Send the message
+        API.call("chat", "sendImage", {
+            chat: chatID,
+            content: input,
+            token: Authenticate.token
+        }, () => loadChat(chatID));
+    }
 }
 
 /**
@@ -98,18 +88,18 @@ function loadChats() {
         if (success) {
             setTitle("Chats");
             // List chats
-            let chatList = UI.find("chat-list");
+            let chatList = UI.find("home-list");
             // Clear list
             UI.clear(chatList);
             // Add chats
             for (let chatObject of result) {
-                chatList.appendChild(UI.create("chat-button", {
+                chatList.appendChild(UI.create("chat-view", {
                     id: chatObject.id,
                     name: chatObject.name
                 }));
             }
             // View the home page
-            UI.view("chats-page");
+            UI.view("home-page");
         }
     });
 }
@@ -118,21 +108,16 @@ function loadChats() {
  * Loads the product status.
  */
 function loadProduct() {
-    let isPremium = Authority.validate(Authenticate.token, ["kipod_club_premium"])[0];
-    if (isPremium) {
-        setProduct("Paid", true);
+    if (Authority.validate(Authenticate.token, ["kipod_club_premium"])[0]) {
+        // Enable the image button
+        UI.show("message-url");
+        // Set product sticker
+        setProduct(true);
     } else {
-        setProduct("Free", false);
-    }
-    return isPremium;
-}
-
-/**
- * Loads the special UI elements
- */
-function loadUI() {
-    if (!loadProduct()) {
-        UI.hide();
+        // Enable the image button
+        UI.hide("message-url");
+        // Set product sticker
+        setProduct(false);
     }
 }
 
@@ -160,30 +145,29 @@ function loadChat(chatID = window.chatID, callback = null) {
                     // Add messages
                     for (let message of result) {
 
-                        // Is the sender the current user?
-                        let isMe = message.authorID === userID;
-
                         // Create a date object to be used for the time label
-                        let date = new Date(message.creationTime * 1000);
+                        let date = new Date(message.timestamp * 1000);
 
                         // Function to prepend a 0 to timestamps
                         let wrapTime = (number) => {
                             return (number < 10) ? "0" + number : number;
                         };
 
+                        // Is the sender the current user?
+                        let isMe = message.sender === userID;
+
                         // Check if the message is an image message
-                        if (!message.hasOwnProperty("imageURL")) {
+                        if (message.type === "text") {
                             messageList.appendChild(UI.create("message-block-text", {
                                 align: isMe ? "end" : "start",
-                                text: message.messageText,
+                                text: message.content,
                                 time: wrapTime(date.getHours()) + ":" + wrapTime(date.getMinutes())
                             }));
                         } else {
                             messageList.appendChild(UI.create("message-block-image", {
                                 align: isMe ? "end" : "start",
-                                text: message.messageText,
-                                time: wrapTime(date.getHours()) + ":" + wrapTime(date.getMinutes()),
-                                url: message.imageURL
+                                url: message.content,
+                                time: wrapTime(date.getHours()) + ":" + wrapTime(date.getMinutes())
                             }));
                         }
                     }

@@ -13,7 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, minimal-ui"/>
     <!-- Mobile -->
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#ffffff"/>
+    <meta name="theme-color" content="#383838"/>
     <!-- Mobile Safari -->
     <meta name="apple-mobile-web-app-capable" content="yes"/>
     <meta name="apple-mobile-web-app-title" content="Kipod Club Chat"/>
@@ -54,47 +54,43 @@
         <p id="product" paid="false">Free version</p>
     </div>
     <div id="pages" column>
-        <div id="chats-page" column>
-            <div id="chat-list" column></div>
-            <button id="chat-new-button" onclick="newChat();">+</button>
+        <div id="home-page" column>
+            <div id="home-list" column></div>
+            <button id="home-create" onclick="clickCreateChat();">+</button>
         </div>
         <div id="chat-page" column>
             <div id="message-list" column></div>
-            <div id="kiosk" row>
-                <input id="message-input" type="text" placeholder="Type a message"/>
-                <button id="message-url" onclick="imageMessage();">Image</button>
-                <button id="message-scroll" onclick="scrollMessage();">⬇</button>
-                <button id="message-send" onclick="finalizeMessage();">⬆</button>
+            <div id="kiosk" column>
+                <div style="justify-content: space-between;" row>
+                    <button id="message-send-image" onclick="clickSendImage();">🖼</button>
+                    <button id="message-list-scroll" onclick="clickScrollChat();">⬇</button>
+                </div>
+                <div row>
+                    <input id="message-input-text" type="text" placeholder="Type a message"/>
+                    <button id="message-send-text" onclick="clickSendText();">⬆</button>
+                </div>
             </div>
-        </div>
-        <div id="new-page" column>
-            <div row>
-                <input id="new-recipient" type="text" placeholder="Recipient name"/>
-                <input id="new-name" type="text" placeholder="Chat name"/>
-            </div>
-            <button onclick="finalizeChat();">Create chat</button>
         </div>
         <div id="loading-page" column>
             <div id="spinner"></div>
         </div>
     </div>
 </div>
-<template id="chat-button">
+<template id="chat-view">
     <div style="background-color: var(--bright); margin: 1vh; justify-content: space-between; border-radius: 2vh;" onclick="showLoading(); setTitle('${name}'); loadChat('${id}');" row>
         <p style="width: auto;">${name}</p>
         <p style="width: auto;">▶</p>
     </div>
 </template>
 <template id="message-block-text">
-    <div kipod="${kipod}" style="background-color: var(--bright); max-width: 60vw; padding: 1vh; margin: 1vh; border-radius: 1vh; align-self: flex-${align};" column>
+    <div style="background-color: var(--bright); max-width: 60vw; padding: 1vh; margin: 1vh; border-radius: 1vh; align-self: flex-${align};" column>
         <p style="font-size: 3vh; padding: 0.2vh; margin: 0.2vh;">${text}</p>
         <p style="font-size: 2vh; padding: 0.2vh; margin: 0.2vh; justify-content: flex-end;">${time}</p>
     </div>
 </template>
 <template id="message-block-image">
-    <div kipod="${kipod}" style="background-color: var(--bright); max-width: 60vw; padding: 1vh; margin: 1vh; border-radius: 1vh; align-self: flex-${align};" column>
-        <img src="${url}" style="border: var(--dark) 1px solid; padding: 0.2vh; margin: 0.2vh; max-height: 20vh; max-width: 56vw;"/>
-        <p style="font-size: 3vh; padding: 0.2vh; margin: 0.2vh;">${text}</p>
+    <div style="background-color: var(--bright); max-width: 60vw; padding: 1vh; margin: 1vh; border-radius: 1vh; align-self: flex-${align};" column>
+        <img src="${url}" style="border-radius: 1vh; margin: 0.2vh; max-height: 20vh; max-width: 56vw;"/>
         <p style="font-size: 2vh; padding: 0.2vh; margin: 0.2vh; justify-content: flex-end;">${time}</p>
     </div>
 </template>

@@ -72,7 +72,7 @@ body {
 
 /* New chat button */
 
-#chat-new-button {
+#home-create {
     /* Set position to hover */
     position: fixed;
     /* Set the actual position */
@@ -97,7 +97,7 @@ body {
 #message-list {
     /* Size */
     min-height: 0;
-    max-height: 85vh;
+    max-height: 75vh;
     /* Alignment */
     justify-content: start;
     /* Overflow behaviour */
@@ -106,30 +106,14 @@ body {
 
 /* Bottom kiosk */
 
-#kiosk {
-    /* Size */
-    min-height: 8vh;
-    max-height: 8vh;
-}
-
-#kiosk > * {
-    /* Rounded corners */
-    border-radius: 2vh;
+#kiosk button {
+    /* Auto width - small */
+    width: auto;
 }
 
 /* Send button */
 
-#message-url {
-    /* Auto width - small */
-    width: auto;
-    /* Padding */
-    padding-left: 2vh;
-    padding-right: 2vh;
-}
-
-#message-scroll, #message-send {
-    /* Auto width - small */
-    width: auto;
+#message-list-scroll, #message-send-text, #message-send-image {
     /* Padding */
     padding-left: 3vh;
     padding-right: 3vh;
@@ -137,7 +121,7 @@ body {
 
 /* Chat list page */
 
-#chat-list {
+#home-list {
     /* Size */
     min-height: 93vh;
     max-height: 93vh;
