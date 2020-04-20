@@ -1,0 +1,166 @@
+/**
+ * Copyright (c) 2019 Nadav Tasher
+ * https://github.com/NadavTasher/BaseTemplate/
+ **/
+
+:root {
+    --bright: #555555;
+    --dark: #444444;
+    --theme: #383838;
+    --text: lightgray;
+}
+
+body {
+}
+
+#authenticate {
+    /* Make the login occupy a maximum of 460px */
+    min-width: 0;
+    max-width: 460px;
+    /* Align it to the page's horizontal center */
+    align-self: center;
+}
+
+#authenticated {
+    /* Occupy the whole page */
+    height: 100vh;
+    /* Make items go to the top of the page*/
+    justify-content: start;
+}
+
+/* Kipod style */
+
+[kipod = true] {
+    background-color: brown;
+}
+
+/* Top bar style */
+
+#bar {
+    /* Size */
+    min-height: 7vh;
+    max-height: 7vh;
+    /* Set the background color */
+    background-color: var(--bright);
+    /* Item alignment */
+    justify-content: start;
+}
+
+#bar > * {
+    width: auto;
+}
+
+#product {
+    border: 2px;
+    border-style: solid;
+}
+
+#product[paid = false] {
+    color: #e85b5b;
+    border-color: #e85b5b;
+}
+
+#product[paid = true] {
+    color: #2cd02c;
+    border-color: #2cd02c;
+}
+
+/* Pages section */
+#pages, #pages > div {
+    height: 100%;
+}
+
+/* New chat button */
+
+#chat-new-button {
+    /* Set position to hover */
+    position: fixed;
+    /* Set the actual position */
+    bottom: 0;
+    right: 0;
+    /* Circlize */
+    border-radius: 50%;
+    /* Size */
+    width: 8vh;
+    height: 8vh;
+}
+
+/* Chat page */
+
+#chat-page {
+    /* Item alignment */
+    justify-content: space-between;
+}
+
+/* Messages list */
+
+#message-list {
+    /* Size */
+    min-height: 0;
+    max-height: 85vh;
+    /* Alignment */
+    justify-content: start;
+    /* Overflow behaviour */
+    overflow-y: scroll;
+}
+
+/* Bottom kiosk */
+
+#kiosk {
+    /* Size */
+    min-height: 8vh;
+    max-height: 8vh;
+}
+
+#kiosk > * {
+    /* Rounded corners */
+    border-radius: 2vh;
+}
+
+/* Send button */
+
+#message-scroll, #message-send {
+    /* Auto width - small */
+    width: auto;
+    /* Padding */
+    padding-left: 3vh;
+    padding-right: 3vh;
+}
+
+/* Chat list page */
+
+#chat-list {
+    /* Size */
+    min-height: 93vh;
+    max-height: 93vh;
+    /* Alignment */
+    justify-content: start;
+    /* Overflow behaviour */
+    overflow-y: scroll;
+}
+
+/* Loading spinner */
+
+#spinner {
+    /* Alignment */
+    align-self: center;
+    /* Border widths and colors */
+    border: 1vh;
+    border-top: 1vh solid var(--dark);
+    /* Border radius */
+    border-radius: 50%;
+    /* Size */
+    height: 7vh;
+    width: 7vh;
+    /* Animation */
+    animation: spin 0.5s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}

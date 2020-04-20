@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<!--
+ Copyright (c) 2019 Nadav Tasher
+ https://github.com/NadavTasher/BaseTemplate/
+-->
+<html row lang="en">
+<head>
+    <!-- Charset -->
+    <meta charset="UTF-8"/>
+    <!-- App Description -->
+    <meta name="description" content="My computer science website chat.">
+    <!-- Viewport -->
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5, user-scalable=yes, minimal-ui"/>
+    <!-- Mobile -->
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#ffffff"/>
+    <!-- Mobile Safari -->
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-title" content="Kipod Club Chat"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"/>
+    <!-- Icons -->
+    <link rel="icon" href="images/icons/icon.png"/>
+    <link rel="apple-touch-icon" href="images/icons/icon_apple.png"/>
+    <!-- Web Manifest -->
+    <link rel="manifest" href="resources/manifest.json"/>
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="stylesheets/app.css"/>
+    <link rel="stylesheet" href="stylesheets/theme.css"/>
+    <!-- Scripts -->
+    <script type="text/javascript" src="scripts/app.js"></script>
+    <script type="text/javascript" src="scripts/base/api.js"></script>
+    <script type="text/javascript" src="scripts/authenticate/api.js"></script>
+    <!-- App Title -->
+    <title>Kipod Club Chat</title>
+    <!-- No Script -->
+    <noscript></noscript>
+</head>
+<body onload="window.prepare(()=>Authenticate.initialize(load))" column>
+<div id="authenticate" column>
+    <p style="font-size: 5vh;">Welcome to Kipod Club</p>
+    <p style="font-size: 3vh;" id="authenticate-output">Please authenticate to continue.</p>
+    <div id="authenticate-inputs" column>
+        <input id="authenticate-name" type="text" placeholder="Name"/>
+        <input id="authenticate-password" type="password" placeholder="Password"/>
+        <div id="authenticate-buttons" row>
+            <button onclick="Authenticate.signUp(load)">Sign Up</button>
+            <button onclick="Authenticate.signIn(load)">Sign In</button>
+        </div>
+    </div>
+</div>
+<div id="authenticated" content>
+    <div id="bar" row>
+        <p id="title">Kipod Club Chat</p>
+        <p id="product" paid="false">Free</p>
+    </div>
+    <div id="pages" column>
+        <div id="chats-page" column>
+            <div id="chat-list" column></div>
+            <button id="chat-new-button" onclick="newChat();">+</button>
+        </div>
+        <div id="chat-page" column>
+            <div id="message-list" column></div>
+            <div id="kiosk" row>
+                <input id="message-input" type="text" placeholder="Type a message"/>
+                <button id="message-scroll" onclick="scrollMessage();">⬇</button>
+                <button id="message-send" onclick="finalizeMessage();">⬆</button>
+            </div>
+        </div>
+        <div id="new-page" column>
+            <div row>
+                <input id="new-recipient" type="text" placeholder="Recipient name"/>
+                <input id="new-name" type="text" placeholder="Chat name"/>
+            </div>
+            <button onclick="finalizeChat();">Create chat</button>
+        </div>
+        <div id="loading-page" column>
+            <div id="spinner"></div>
+        </div>
+    </div>
+</div>
+<template id="chat-button">
+    <div style="background-color: var(--bright); margin: 1vh; justify-content: space-between; border-radius: 2vh;" onclick="showLoading(); setTitle('${name}'); loadChat('${id}');" row>
+        <p style="width: auto;">${name}</p>
+        <p style="width: auto;">▶</p>
+    </div>
+</template>
+<template id="message-sent">
+    <div kipod="${kipod}" style="background-color: var(--bright); max-width: 60vw; padding: 1vh; margin: 1vh; border-radius: 1vh; align-self: flex-end;" column>
+        <p style="font-size: 3vh; padding: 0.2vh; margin: 0.2vh;">${text}</p>
+        <p style="font-size: 2vh; padding: 0.2vh; margin: 0.2vh; justify-content: flex-end;">${time}</p>
+    </div>
+</template>
+<template id="message-received">
+    <div kipod="${kipod}" style="background-color: var(--bright); max-width: 60vw; padding: 1vh; margin: 1vh; border-radius: 1vh; align-self: flex-start;" column>
+        <p style="font-size: 2vh; padding: 0.2vh; margin: 0.2vh; justify-content: flex-start;">${name}</p>
+        <p style="font-size: 3vh; padding: 0.2vh; margin: 0.2vh;">${text}</p>
+        <p style="font-size: 2vh; padding: 0.2vh; margin: 0.2vh; justify-content: flex-end;">${time}</p>
+    </div>
+</template>
+</body>
+</html>

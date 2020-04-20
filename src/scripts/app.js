@@ -1,0 +1,186 @@
+window.chatID = null;
+
+function load() {
+    // Initialize pull loop to checkout every 10 seconds
+    Pull.initialize(10);
+    // Set title
+    showLoading();
+    // Load chats
+    loadChats();
+    // Start reload interval
+    setInterval(loadChat, 5 * 1000);
+}
+
+/**
+ * Opens the new chat page.
+ */
+function newChat() {
+    setTitle("New chat");
+    UI.view("new-page");
+}
+
+/**
+ * Creates the chat from the user inputs.
+ */
+function finalizeChat() {
+    let name = UI.find("new-name").value;
+    let participants = UI.find("new-recipient").value;
+    // Validate and create chat
+    if (name.length > 0 && participants.length > 0) {
+        UI.find("new-name").value = "";
+        UI.find("new-recipient").value = "";
+        createChat(name, participants);
+    }
+}
+
+/**
+ * Scrolls to the bottom of the message list.
+ */
+function scrollMessage() {
+    let list = UI.find("message-list");
+    list.scrollTo(0, list.scrollHeight);
+}
+
+/**
+ * Sends a message from the user inputs.
+ */
+function finalizeMessage() {
+    let message = UI.find("message-input").value;
+    if (message.length > 0) {
+        UI.find("message-input").value = "";
+        sendMessage(chatID, message);
+    }
+}
+
+/**
+ * Creates a new chat.
+ * @param name Chat name
+ * @param recipient Recipient name
+ */
+function createChat(name, recipient) {
+    API.call("chat", "createChat", {
+        name: name,
+        recipient: recipient,
+        token: Authenticate.token
+    }, (status, result) => {
+        if (status) {
+            showLoading();
+            setTitle(name);
+            loadChat(result, scrollMessage);
+        }
+    });
+}
+
+/**
+ * Sends a message.
+ * @param chatID Chat ID
+ * @param message Message
+ */
+function sendMessage(chatID, message) {
+    API.call("chat", "sendMessage", {
+        chat: chatID,
+        message: message,
+        token: Authenticate.token
+    }, () => loadChat(chatID));
+}
+
+/**
+ * Loads the chat list.
+ */
+function loadChats() {
+    API.call("chat", "listChats", {
+        token: Authenticate.token
+    }, (success, result) => {
+        if (success) {
+            setTitle("Chats");
+            // List chats
+            let chatList = UI.find("chat-list");
+            // Clear list
+            UI.clear(chatList);
+            // Add chats
+            for (let chatObject of result) {
+                chatList.appendChild(UI.create("chat-button", {
+                    id: chatObject.id,
+                    name: chatObject.name
+                }));
+            }
+            // View the home page
+            UI.view("chats-page");
+        }
+    });
+}
+
+/**
+ * Loads the message list.
+ * @param chatID Chat ID
+ * @param callback Callback function
+ */
+function loadChat(chatID = window.chatID, callback = null) {
+    if (chatID !== null) {
+        window.chatID = chatID;
+        // Fetch new messages
+        API.call("chat", "listMessages", {
+            chat: chatID,
+            token: Authenticate.token
+        }, (success, result) => {
+            if (success) {
+                // Fetch user ID
+                let tokenValidation = Authority.validate(Authenticate.token);
+                if (tokenValidation[0]) {
+                    let userID = tokenValidation[1];
+                    let messageList = UI.find("message-list");
+                    // Clear
+                    UI.clear(messageList);
+                    // Add messages
+                    for (let message of result) {
+
+                        // Is the sender the current user?
+                        let isMe = message.authorID === userID;
+
+                        // Create a date
+                        let date = new Date(message.creationTime * 1000);
+
+                        let wrapTime = (number) => {
+                            return (number < 10) ? "0" + number : number;
+                        };
+
+                        let messageTime = wrapTime(date.getHours()) + ":" + wrapTime(date.getMinutes());
+                        let messageText = message.messageText;
+
+                        if (isMe) {
+                            messageList.appendChild(UI.create("message-sent", {
+                                text: messageText,
+                                time: messageTime
+                            }));
+                        } else {
+                            messageList.appendChild(UI.create("message-received", {
+                                name: message.authorName,
+                                text: messageText,
+                                time: messageTime
+                            }));
+                        }
+                    }
+                }
+                UI.view("chat-page");
+                // Callback
+                if (callback !== null)
+                    callback();
+            }
+        });
+    }
+}
+
+/**
+ * Shows a loading screen.
+ */
+function showLoading() {
+    UI.view("loading-page");
+}
+
+/**
+ * Sets the bar's text.
+ * @param title Title
+ */
+function setTitle(title) {
+    UI.find("title").innerText = title;
+}
