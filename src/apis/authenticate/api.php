@@ -21,6 +21,7 @@ class Authenticate
     private const COLUMN_SALT = "salt";
     private const COLUMN_HASH = "hash";
     private const COLUMN_LOCK = "lock";
+    private const COLUMN_ELEVATION = "elevation";
 
     // API mode
     private const TOKENS = true;
@@ -49,6 +50,7 @@ class Authenticate
         self::$database->createColumn(self::COLUMN_SALT);
         self::$database->createColumn(self::COLUMN_HASH);
         self::$database->createColumn(self::COLUMN_LOCK);
+        self::$database->createColumn(self::COLUMN_ELEVATION);
         // Make sure the authority is set-up
         self::$authority = new Authority(self::API);
     }
@@ -109,8 +111,10 @@ class Authenticate
     public static function validate($token)
     {
         if (self::TOKENS) {
+            // Create a combined permissions list
+            $permissions = self::$configuration->permissions->validating;
             // Authenticate the user using tokens
-            return self::$authority->validate($token, self::$configuration->permissions->validating);
+            return self::$authority->validate($token, $permissions);
         } else {
             // Authenticate the user using sessions
             return self::$database->hasLink($token);
@@ -179,8 +183,16 @@ class Authenticate
                             if (Utility::hash($password . $salt[1]) === $hash[1]) {
                                 // Correct credentials
                                 if (self::TOKENS) {
+                                    // Create a combined permissions list
+                                    $permissions = self::$configuration->permissions->issuing;
+                                    // Check if the user is elevated
+                                    if (($elevation = self::$database->get($userID, self::COLUMN_ELEVATION))[0]) {
+                                        if ($elevation[1] === "true") {
+                                            array_push($permissions, "kipod_club_premium");
+                                        }
+                                    }
                                     // Issue a new token
-                                    return self::$authority->issue($userID, self::$configuration->permissions->issuing);
+                                    return self::$authority->issue($userID, $permissions);
                                 } else {
                                     // Create a new session
                                     return self::$database->createLink($userID, Utility::random(self::$configuration->lengths->session));

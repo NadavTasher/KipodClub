@@ -116,11 +116,13 @@ function loadChats() {
  * Loads the product status.
  */
 function loadProduct() {
-    if (Authority.validate(Authenticate.token, ["kipod_club_premium"])[0]) {
+    let isPremium = Authority.validate(Authenticate.token, ["kipod_club_premium"])[0];
+    if (isPremium) {
         setProduct("Paid", true);
     } else {
         setProduct("Free", false);
     }
+    return isPremium;
 }
 
 /**
