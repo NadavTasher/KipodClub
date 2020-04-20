@@ -9,6 +9,8 @@ function load() {
     loadChats();
     // Load product
     loadProduct();
+    // Load the special elevated (purchased) UI
+    loadUI();
     // Start reload interval
     setInterval(loadChat, 5 * 1000);
 }
@@ -126,6 +128,15 @@ function loadProduct() {
 }
 
 /**
+ * Loads the special UI elements
+ */
+function loadUI() {
+    if (!loadProduct()){
+        UI.hide();
+    }
+}
+
+/**
  * Loads the message list.
  * @param chatID Chat ID
  * @param callback Callback function
@@ -162,19 +173,17 @@ function loadChat(chatID = window.chatID, callback = null) {
 
                         // Check if the message is an image message
                         if (!message.hasOwnProperty("imageURL")) {
-                            messageList.appendChild(UI.create("message-text", {
+                            messageList.appendChild(UI.create("message-block-text", {
                                 align: isMe ? "end" : "start",
                                 text: message.messageText,
-                                time: wrapTime(date.getHours()) + ":" + wrapTime(date.getMinutes()),
-                                kipod: message.kipod
+                                time: wrapTime(date.getHours()) + ":" + wrapTime(date.getMinutes())
                             }));
                         } else {
-                            messageList.appendChild(UI.create("message-image", {
+                            messageList.appendChild(UI.create("message-block-image", {
                                 align: isMe ? "end" : "start",
                                 text: message.messageText,
                                 time: wrapTime(date.getHours()) + ":" + wrapTime(date.getMinutes()),
-                                url: message.imageURL,
-                                kipod: message.kipod
+                                url: message.imageURL
                             }));
                         }
                     }

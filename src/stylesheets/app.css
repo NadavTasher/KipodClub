@@ -119,6 +119,14 @@ body {
 
 /* Send button */
 
+#message-url {
+    /* Auto width - small */
+    width: auto;
+    /* Padding */
+    padding-left: 2vh;
+    padding-right: 2vh;
+}
+
 #message-scroll, #message-send {
     /* Auto width - small */
     width: auto;
