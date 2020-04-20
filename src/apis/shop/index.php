@@ -27,12 +27,18 @@ Base::handle(function ($action, $parameters) {
                         array_push($permissions, $parameters->app);
                         // Save to database
                         $database->set($userID, Authenticate::COLUMN_PERMISSIONS, json_encode($permissions));
+                        // Notify the user
+                        Manager::push($userID, "New item purchased!", "You now have access to \"" . $parameters->app . "\"");
+                        // Return success
                         return [true, "You owe me money"];
                     }
                     return [false, "Missing parameter"];
                 }
                 return [false, "Unknown hook"];
             }
+            return $authentication;
         }
+        return [false, "Invalid token"];
     }
+    return [false, "Missing token"];
 });

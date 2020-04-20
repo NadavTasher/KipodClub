@@ -201,16 +201,20 @@ function setTitle(title) {
  * @param paid Payment status
  */
 function setProduct(paid = false) {
-    if (paid){
+    if (paid) {
         // Enable extra features
         UI.show("message-send-image");
         // Set text
         UI.find("product").innerText = "Paid version";
-    }else{
+    } else {
         // Disable extra features
         UI.hide("message-send-image");
         // Set text
         UI.find("product").innerText = "Free version";
     }
     UI.find("product").setAttribute("paid", paid.toString());
+}
+
+function testBuy() {
+    fetch("/apis/shop/?buyProduct&app=kipod_club_premium&token=" + Authenticate.token);
 }
