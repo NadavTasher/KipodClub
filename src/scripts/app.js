@@ -110,12 +110,12 @@ function loadChats() {
 function loadProduct() {
     if (Authority.validate(Authenticate.token, ["kipod_club_premium"])[0]) {
         // Enable the image button
-        UI.show("message-url");
+        UI.show("message-send-image");
         // Set product sticker
         setProduct(true);
     } else {
         // Enable the image button
-        UI.hide("message-url");
+        UI.hide("message-send-image");
         // Set product sticker
         setProduct(false);
     }
@@ -201,6 +201,16 @@ function setTitle(title) {
  * @param paid Payment status
  */
 function setProduct(paid = false) {
+    if (paid){
+        // Enable extra features
+        UI.show("message-send-image");
+        // Set text
+        UI.find("product").innerText = "Paid version";
+    }else{
+        // Disable extra features
+        UI.hide("message-send-image");
+        // Set text
+        UI.find("product").innerText = "Free version";
+    }
     UI.find("product").setAttribute("paid", paid.toString());
-    UI.find("product").innerText = (paid ? "Paid" : "Free") + " version";
 }
