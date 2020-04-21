@@ -95,7 +95,7 @@ function loadChats() {
             for (let chatObject of result) {
                 chatList.appendChild(UI.create("chat-view", {
                     id: chatObject.id,
-                    name: chatObject.name
+                    name: escape(chatObject.name)
                 }));
             }
             // View the home page
