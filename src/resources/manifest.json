@@ -1,7 +1,7 @@
 {
-  "name": "MySimpleChat",
-  "short_name": "MySimpleChat",
-  "description": "A simple chat app.",
+  "name": "Kipod Club Chat",
+  "short_name": "Kipod Club Chat",
+  "description": "My computer science website chat.",
   "start_url": "../index.html",
   "background_color": "#383838",
   "theme_color": "#383838",
